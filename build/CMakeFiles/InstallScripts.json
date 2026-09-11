@@ -1,7 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"D:/AI/study/CPU GEMM/cpu-gemm/build/cmake_install.cmake"
-	],
-	"Parallel" : false
-}

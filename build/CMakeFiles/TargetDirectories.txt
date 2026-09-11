@@ -1,3 +1,0 @@
-D:/AI/study/CPU GEMM/cpu-gemm/build/CMakeFiles/matrix_app.dir
-D:/AI/study/CPU GEMM/cpu-gemm/build/CMakeFiles/ALL_BUILD.dir
-D:/AI/study/CPU GEMM/cpu-gemm/build/CMakeFiles/ZERO_CHECK.dir
