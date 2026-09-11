@@ -32,7 +32,7 @@ void log_result(std::ofstream& csv_file, const std::string& name, int N, const B
 }
 
 int main(){
-    std::vector<int> test_sizes = {16, 64, 128, 256, 512, 1024};
+    std::vector<int> test_sizes = {64, 128, 256, 512, 1024};
     int num_iters = 20;
 
     std::string output_dir = "results";
