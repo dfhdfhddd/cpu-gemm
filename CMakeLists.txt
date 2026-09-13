@@ -15,7 +15,9 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 # (根据手册，我们第一阶段要写 main.cpp 和 gemm_ijk.cpp)
 # 1. 收集公共的源文件（所有算子实现和测速工具）
 set(COMMON_SOURCES
-    src/gemm_ijk.cpp
+    src/baseline/gemm_ijk.cpp
+    src/baseline/gemm_ikj.cpp
+    src/baseline/gemm_kij.cpp
     src/benchmark_utils.cpp
 )
 

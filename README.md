@@ -56,4 +56,8 @@ ctest --test-dir build -C Release --output-on-failure
 
 当前已知环境事项：本机 Release 构建已由用户确认通过；Codex 环境复跑时因进程环境变量同时存在 `Path` 和 `PATH`，MSBuild 报环境错误，这不属于项目源码错误。
 
-完整学习路线、重要程度标记、逐项进度和最终验收标准见 [CPU GEMM 项目手册](../CPU_GEMM_项目手册.md)。
+完整学习路线、重要程度标记、逐项进度和最终验收标准见：
+
+- [CPU GEMM 主体手册](docs/CPU_GEMM_主体手册.md)
+- [阶段一：基线闭环](docs/阶段一_基线闭环手册.md)
+- [阶段二：循环顺序与缓存](docs/阶段二_循环顺序与缓存手册.md)
