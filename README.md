@@ -10,7 +10,7 @@
 - `benchmark_gemm` 和 `test_gemm` 都通过 CMake 构建，并调用同一个 `gemm_ijk`；
 - 正确性测试覆盖标量、全 1、单位矩阵、手算矩阵、固定随机矩阵和逐元素参考检查；
 - benchmark 使用固定随机种子、3 次预热和 20 次正式计时，输出中位数、最小值、标准差、GFLOPS 和 checksum；
-- 结果写入 `results/benchmark_results.csv`；当前代码中的测试规模为 `64、128、256、512、1024`。
+- 当前分块 benchmark 每个矩阵规模比较 6 组候选的 `Mc/Nc/Kc` 参数，结果写入带时间戳的 `results/benchmark_YYYYMMDD_HHMMSS.csv`；测试规模为 `64、128、256、512、1024`。
 
 当前还不能标记 `baseline-v1`：提交前应在本机 Release 构建后确认测试和 benchmark 成功，并确保 CSV 不含旧的 `N=4` 或 `N=16` 记录。README、手册和结果文件必须与最终一次运行保持一致。
 
@@ -48,7 +48,14 @@ ctest --test-dir build -C Release --output-on-failure
 .\build\Release\benchmark_gemm.exe
 ```
 
-程序会覆盖写入 `results/benchmark_results.csv`。计时只包含一次 GEMM 调用，随机数生成、内存分配、预热和 checksum 不计入计时区间。
+程序会在 `results` 目录生成带时间戳的 CSV 文件。当前每个 `N` 输出以下六组候选：
+
+```text
+Mc/Nc/Kc = 32/128/128, 64/64/64, 64/128/128,
+           128/64/128, 128/128/64, 128/128/128
+```
+
+计时只包含一次 GEMM 调用，随机数生成、内存分配、预热和 checksum 不计入计时区间。
 
 ## 性能记录要求
 

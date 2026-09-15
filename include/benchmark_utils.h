@@ -1,6 +1,7 @@
 #pragma once
 // 1. 定义函数指针别名：统一所有 GEMM 函数的签名
 typedef void (*gemm_func_t)(const float*, const float*, float*, int);
+typedef void (*gemm_blocked_func_t)(const float*, const float*, float*, int, int, int, int);
 
 // 2. 定义结构体：用于打包返回所有统计信息
 struct BenchmarkStats {
@@ -12,3 +13,5 @@ struct BenchmarkStats {
     float checksum;
 };
 BenchmarkStats run_benchmark(gemm_func_t gemm_func, int N, int num_iters = 10);
+BenchmarkStats run_benchmark_blocked(gemm_blocked_func_t gemm_func, int N, int num_iters,
+                                     int Mc, int Nc, int Kc);

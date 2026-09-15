@@ -22,12 +22,6 @@ std::string get_current_timestamp() {
     return ss.str();
 }
 
-void gemm_ijk(const float* A, const float* B, float* C, int N);
-void gemm_ikj(const float *A, const float *B, float *C, int N);
-void gemm_kij(const float *A, const float *B, float *C, int N);
-
-BenchmarkStats run_benchmark(gemm_func_t gemm_func, int N, int num_iters);
-
 void log_result(std::ofstream& csv_file, const std::string& name, int N, const BenchmarkStats& stats) {
     std::cout << std::left << std::setw(15) << name 
               << "| N=" << std::setw(5) << N 
@@ -47,6 +41,18 @@ void log_result(std::ofstream& csv_file, const std::string& name, int N, const B
 int main(){
     std::vector<int> test_sizes = {64, 128, 256, 512, 1024};
     int num_iters = 20;
+
+    // 阶段三当前重点比较的六组候选参数。
+    // 结构体只保存配置，不复制分块算法；所有配置仍复用同一个 4x4 实现。
+    struct BlockConfig {
+        int Mc;
+        int Nc;
+        int Kc;
+    };
+    const std::vector<BlockConfig> block_configs = {
+        {64, 128, 128},
+        {128, 128, 128}
+    };
 
     std::string output_dir = "results";
     if (!fs::exists(output_dir)) {
@@ -69,18 +75,43 @@ int main(){
 
     for (int N : test_sizes) {
         // 测试第一版：朴素 IJK
-        auto stats_ijk = run_benchmark(gemm_ijk, N, num_iters);
-        log_result(csv_file, "gemm_ijk", N, stats_ijk);
+        // auto stats_ijk = run_benchmark(gemm_ijk, N, num_iters);
+        // log_result(csv_file, "gemm_ijk", N, stats_ijk);
 
         // 测试第二版：IKJ
-        auto stats_ikj = run_benchmark(gemm_ikj, N, num_iters);
-        log_result(csv_file, "gemm_ikj", N, stats_ikj);
-        
-        // 测试第三版：KIJ
-        auto stats_kij = run_benchmark(gemm_kij, N, num_iters);
-        log_result(csv_file, "gemm_kij", N, stats_kij);
+        // auto stats_ikj = run_benchmark(gemm_ikj, N, num_iters);
+        // log_result(csv_file, "gemm_ikj", N, stats_ikj);
 
+        // 测试第三版：KIJ
+        // auto stats_kij = run_benchmark(gemm_kij, N, num_iters);
+        // log_result(csv_file, "gemm_kij", N, stats_kij);
+
+        //表面分块
+        // auto stats_block_ikj = run_benchmark(gemm_blocked_basic_ikj, N, num_iters);
+        // log_result(csv_file, "gemm_blocked_basic_ikj128x128", N, stats_block_ikj);
+
+        // auto stats_block_kij = run_benchmark(gemm_blocked_basic_kij, N, num_iters);
+        // log_result(csv_file, "gemm_blocked_basic_kij128x128", N, stats_block_kij);
+
+        // auto stats_block_ikj_ikj = run_benchmark(gemm_blocked_basic_ikj_ikj, N, num_iters);
+        // log_result(csv_file, "gemm_blocked_basic_ikj_ikj128x128", N, stats_block_ikj_ikj);
+
+        // auto stats_block_ikj_kij = run_benchmark(gemm_blocked_basic_ikj_kij, N, num_iters);
+        // log_result(csv_file, "gemm_blocked_basic_ikj_kij128x128", N, stats_block_ikj_kij);
+
+        // 实际分块：只比较当前筛选出的六组候选参数。
+        for (const BlockConfig& config : block_configs) {
+            std::string name = "gemm_blocked_Mc" + std::to_string(config.Mc)
+                + "_Nc" + std::to_string(config.Nc)
+                + "_Kc" + std::to_string(config.Kc) + "_4x4";
+            auto stats_blocked = run_benchmark_blocked(
+                gemm_blocked_4x4_impl, N, num_iters,
+                config.Mc, config.Nc, config.Kc);
+            log_result(csv_file, name, N, stats_blocked);
+        }
         std::cout << std::string(120, '-') << "\n";
+
+
     }
 
     return 0;

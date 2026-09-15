@@ -18,6 +18,8 @@ set(COMMON_SOURCES
     src/baseline/gemm_ijk.cpp
     src/baseline/gemm_ikj.cpp
     src/baseline/gemm_kij.cpp
+    src/block_size/gemm_blocked_basic.cpp
+    src/block_size/gemm_blocked_4x4.cpp
     src/benchmark_utils.cpp
 )
 

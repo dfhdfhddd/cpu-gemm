@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include <cmath>
 #include <random>
 #include <cstdlib> // std::exit
@@ -134,8 +135,7 @@ void verify_matrix(const std::vector<float>& C_test, const std::vector<float>& C
               << max_abs_diff << ")" << std::endl;
 }
 
-void test_elementwise_reference() {
-    int N = 64;
+void test_elementwise_reference(int N) {
     std::vector<float> A(N * N), B(N * N), C(N * N, 0.0f), C_ref(N * N, 0.0f);
     std::mt19937 rng(12345);
     std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
@@ -156,8 +156,28 @@ void test_elementwise_reference() {
         }
     }
 
-    gemm_ijk(A.data(), B.data(), C.data(), N);
+    gemm_blocked_64x64_4x4(A.data(), B.data(), C.data(), N);
     verify_matrix(C, C_ref, N);
+
+    std::fill(C.begin(), C.end(), 0.0f);
+    gemm_blocked_128x128_4x4(A.data(), B.data(), C.data(), N);
+    verify_matrix(C, C_ref, N);
+
+    // N=130 专门验证 32、64、128 三种块大小的全部组合。
+    if (N == 130) {
+        const std::vector<int> block_sizes = {32, 64, 128};
+        for (int Mc : block_sizes) {
+            for (int Nc : block_sizes) {
+                for (int Kc : block_sizes) {
+                    std::fill(C.begin(), C.end(), 0.0f);
+                    gemm_blocked_4x4_impl(A.data(), B.data(), C.data(), N, Mc, Nc, Kc);
+                    verify_matrix(C, C_ref, N);
+                }
+            }
+        }
+        std::cout << "[PASS] All 27 Mc/Nc/Kc combinations (N=130)" << std::endl;
+    }
+
 }
 
 int main() {
@@ -166,7 +186,9 @@ int main() {
     test_identity();
     test_hand_calculated();
     test_random_matrix();
-    test_elementwise_reference();
+    std::vector<int> q = {1, 3, 5, 100, 127, 128, 130, 256};
+    for(auto i:q)
+        test_elementwise_reference(i);
 
     std::cout << "\nAll test cases PASSED! Ready for benchmark." << std::endl;
     return 0;
