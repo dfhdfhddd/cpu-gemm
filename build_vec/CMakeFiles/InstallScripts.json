@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"D:/AI/study/CPU GEMM/cpu-gemm/build_vec/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

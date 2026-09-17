@@ -1,0 +1,10 @@
+^D:\AI\STUDY\CPU GEMM\CPU-GEMM\BUILD_SCALAR\CMAKEFILES\01E57EC24309B2982E1B6E5673ABB6B9\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-SD:/AI/study/CPU GEMM/cpu-gemm" "-BD:/AI/study/CPU GEMM/cpu-gemm/build_scalar" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "D:/AI/study/CPU GEMM/cpu-gemm/build_scalar/cpu_gemm.slnx"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

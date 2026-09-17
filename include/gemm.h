@@ -14,3 +14,11 @@ void gemm_blocked_128x128_4x4(const float *A, const float *B, float *C, int N);
 // 参数化分块实现：Mc、Nc、Kc 分别控制行块、列块和归约块大小。
 void gemm_blocked_4x4_impl(const float *A, const float *B, float *C, int N,
                            int Mc, int Nc, int Kc);
+
+// 参数化 2x4 微内核分块实现。
+void gemm_blocked_2x4_impl(const float *A, const float *B, float *C, int N,
+                           int Mc, int Nc, int Kc);
+
+// 参数化 3x4 微内核分块实现。
+void gemm_blocked_3x4_impl(const float *A, const float *B, float *C, int N,
+                           int Mc, int Nc, int Kc);

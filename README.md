@@ -36,6 +36,22 @@ cmake --build build --config Release
 ctest --test-dir build -C Release --output-on-failure
 ```
 
+### 关闭自动向量化的对照实验
+
+如果要观察“不使用编译器自动 SIMD 向量化”时的结果，重新配置并构建：
+
+```powershell
+cmake -S . -B build -DGEMM_DISABLE_AUTOVEC=ON
+cmake --build build --config Release
+```
+
+MSVC 使用 `/Qvec-`，GCC/Clang 使用 `-fno-tree-vectorize`。该选项只关闭编译器自动向量化；x64 下标量浮点运算仍可能使用 XMM 寄存器，这是标量指令的正常实现，不代表一次处理多个 float。完成对照实验后，恢复普通 Release 配置：
+
+```powershell
+cmake -S . -B build -DGEMM_DISABLE_AUTOVEC=OFF
+cmake --build build --config Release
+```
+
 运行正确性测试：
 
 ```powershell

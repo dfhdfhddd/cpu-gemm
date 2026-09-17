@@ -4,6 +4,10 @@ cmake_minimum_required(VERSION 3.10)
 # 2. 定义项目名称，并声明这是一个 C++ 项目
 project(cpu_gemm LANGUAGES CXX)
 
+# 性能对照开关：打开后禁止编译器自动向量化。
+# 默认关闭，保持普通 Release 构建行为不变。
+option(GEMM_DISABLE_AUTOVEC "Disable compiler auto-vectorization for GEMM benchmarks" OFF)
+
 # 3. 设置 C++ 标准（推荐使用现代的 C++17）
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -20,6 +24,8 @@ set(COMMON_SOURCES
     src/baseline/gemm_kij.cpp
     src/block_size/gemm_blocked_basic.cpp
     src/block_size/gemm_blocked_4x4.cpp
+    src/block_size/gemm_blocked_2x4.cpp
+    src/block_size/gemm_blocked_3x4.cpp
     src/benchmark_utils.cpp
 )
 
@@ -48,6 +54,14 @@ endif()
 # (手册要求：MSVC 记录 /O2，GCC/Clang 从 -O2 或 -O3 开始)
 if(MSVC)
     target_compile_options(benchmark_gemm PRIVATE /O2)
+    if(GEMM_DISABLE_AUTOVEC)
+        target_compile_options(benchmark_gemm PRIVATE /Qvec-)
+        target_compile_options(test_gemm PRIVATE /Qvec-)
+    endif()
 else()
     target_compile_options(benchmark_gemm PRIVATE -O3)
+    if(GEMM_DISABLE_AUTOVEC)
+        target_compile_options(benchmark_gemm PRIVATE -fno-tree-vectorize)
+        target_compile_options(test_gemm PRIVATE -fno-tree-vectorize)
+    endif()
 endif()

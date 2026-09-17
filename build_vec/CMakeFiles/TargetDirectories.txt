@@ -1,0 +1,5 @@
+D:/AI/study/CPU GEMM/cpu-gemm/build_vec/CMakeFiles/benchmark_gemm.dir
+D:/AI/study/CPU GEMM/cpu-gemm/build_vec/CMakeFiles/test_gemm.dir
+D:/AI/study/CPU GEMM/cpu-gemm/build_vec/CMakeFiles/RUN_TESTS.dir
+D:/AI/study/CPU GEMM/cpu-gemm/build_vec/CMakeFiles/ALL_BUILD.dir
+D:/AI/study/CPU GEMM/cpu-gemm/build_vec/CMakeFiles/ZERO_CHECK.dir

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\AI\study\CPU GEMM\cpu-gemm\build_vec\CMakeFiles\1dbbe392394b2d7cac4bfab0302d662b\RUN_TESTS_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{2065F6F9-5A90-3F04-95F9-F9B6823F83F2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

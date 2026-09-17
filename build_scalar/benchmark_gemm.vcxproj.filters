@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\AI\study\CPU GEMM\cpu-gemm\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AI\study\CPU GEMM\cpu-gemm\src\baseline\gemm_ijk.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AI\study\CPU GEMM\cpu-gemm\src\baseline\gemm_ikj.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AI\study\CPU GEMM\cpu-gemm\src\baseline\gemm_kij.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AI\study\CPU GEMM\cpu-gemm\src\block_size\gemm_blocked_basic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AI\study\CPU GEMM\cpu-gemm\src\block_size\gemm_blocked_4x4.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AI\study\CPU GEMM\cpu-gemm\src\benchmark_utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\AI\study\CPU GEMM\cpu-gemm\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{BB9963E9-97BA-3E0C-B9D7-604FEB227683}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

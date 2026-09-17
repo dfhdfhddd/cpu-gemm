@@ -1,0 +1,10 @@
+^D:\AI\STUDY\CPU GEMM\CPU-GEMM\BUILD_VEC\CMAKEFILES\1DBBE392394B2D7CAC4BFAB0302D662B\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-SD:/AI/study/CPU GEMM/cpu-gemm" "-BD:/AI/study/CPU GEMM/cpu-gemm/build_vec" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "D:/AI/study/CPU GEMM/cpu-gemm/build_vec/cpu_gemm.slnx"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

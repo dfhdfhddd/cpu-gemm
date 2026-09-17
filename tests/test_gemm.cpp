@@ -160,6 +160,14 @@ void test_elementwise_reference(int N) {
     verify_matrix(C, C_ref, N);
 
     std::fill(C.begin(), C.end(), 0.0f);
+    gemm_blocked_2x4_impl(A.data(), B.data(), C.data(), N, 64, 64, 64);
+    verify_matrix(C, C_ref, N);
+
+    std::fill(C.begin(), C.end(), 0.0f);
+    gemm_blocked_3x4_impl(A.data(), B.data(), C.data(), N, 64, 64, 64);
+    verify_matrix(C, C_ref, N);
+
+    std::fill(C.begin(), C.end(), 0.0f);
     gemm_blocked_128x128_4x4(A.data(), B.data(), C.data(), N);
     verify_matrix(C, C_ref, N);
 
@@ -172,10 +180,18 @@ void test_elementwise_reference(int N) {
                     std::fill(C.begin(), C.end(), 0.0f);
                     gemm_blocked_4x4_impl(A.data(), B.data(), C.data(), N, Mc, Nc, Kc);
                     verify_matrix(C, C_ref, N);
+
+                    std::fill(C.begin(), C.end(), 0.0f);
+                    gemm_blocked_2x4_impl(A.data(), B.data(), C.data(), N, Mc, Nc, Kc);
+                    verify_matrix(C, C_ref, N);
+
+                    std::fill(C.begin(), C.end(), 0.0f);
+                    gemm_blocked_3x4_impl(A.data(), B.data(), C.data(), N, Mc, Nc, Kc);
+                    verify_matrix(C, C_ref, N);
                 }
             }
         }
-        std::cout << "[PASS] All 27 Mc/Nc/Kc combinations (N=130)" << std::endl;
+        std::cout << "[PASS] All 27 Mc/Nc/Kc combinations for 4x4, 3x4 and 2x4 (N=130)" << std::endl;
     }
 
 }

@@ -42,15 +42,17 @@ int main(){
     std::vector<int> test_sizes = {64, 128, 256, 512, 1024};
     int num_iters = 20;
 
-    // 阶段三当前重点比较的六组候选参数。
-    // 结构体只保存配置，不复制分块算法；所有配置仍复用同一个 4x4 实现。
+    // 阶段三当前重点比较的四组候选参数。
+    // 结构体只保存配置，不复制分块算法；三个微内核复用同一套参数。
     struct BlockConfig {
         int Mc;
         int Nc;
         int Kc;
     };
     const std::vector<BlockConfig> block_configs = {
-        {64, 128, 128},
+        {48, 48, 48},
+        {48, 48, 128},
+        {128, 128, 48},
         {128, 128, 128}
     };
 
@@ -99,15 +101,31 @@ int main(){
         // auto stats_block_ikj_kij = run_benchmark(gemm_blocked_basic_ikj_kij, N, num_iters);
         // log_result(csv_file, "gemm_blocked_basic_ikj_kij128x128", N, stats_block_ikj_kij);
 
-        // 实际分块：只比较当前筛选出的六组候选参数。
+        // 在相同分块参数下比较 4x4、3x4 和 2x4 微内核。
         for (const BlockConfig& config : block_configs) {
-            std::string name = "gemm_blocked_Mc" + std::to_string(config.Mc)
+            std::string name4x4 = "gemm_blocked_Mc" + std::to_string(config.Mc)
                 + "_Nc" + std::to_string(config.Nc)
                 + "_Kc" + std::to_string(config.Kc) + "_4x4";
-            auto stats_blocked = run_benchmark_blocked(
+            auto stats4x4 = run_benchmark_blocked(
                 gemm_blocked_4x4_impl, N, num_iters,
                 config.Mc, config.Nc, config.Kc);
-            log_result(csv_file, name, N, stats_blocked);
+            log_result(csv_file, name4x4, N, stats4x4);
+
+            std::string name3x4 = "gemm_blocked_Mc" + std::to_string(config.Mc)
+                + "_Nc" + std::to_string(config.Nc)
+                + "_Kc" + std::to_string(config.Kc) + "_3x4";
+            auto stats3x4 = run_benchmark_blocked(
+                gemm_blocked_3x4_impl, N, num_iters,
+                config.Mc, config.Nc, config.Kc);
+            log_result(csv_file, name3x4, N, stats3x4);
+
+            std::string name2x4 = "gemm_blocked_Mc" + std::to_string(config.Mc)
+                + "_Nc" + std::to_string(config.Nc)
+                + "_Kc" + std::to_string(config.Kc) + "_2x4";
+            auto stats2x4 = run_benchmark_blocked(
+                gemm_blocked_2x4_impl, N, num_iters,
+                config.Mc, config.Nc, config.Kc);
+            log_result(csv_file, name2x4, N, stats2x4);
         }
         std::cout << std::string(120, '-') << "\n";
 
@@ -116,3 +134,54 @@ int main(){
 
     return 0;
 }
+
+// #include <immintrin.h>
+// #include <intrin.h>
+// #include <iostream>
+
+// void test_fma_throughput() {
+//     __m128 a0 = _mm_set_ss(0.1f), a1 = _mm_set_ss(0.2f);
+//     __m128 a2 = _mm_set_ss(0.3f), a3 = _mm_set_ss(0.4f);
+//     __m128 a4 = _mm_set_ss(0.5f), a5 = _mm_set_ss(0.6f);
+//     __m128 a6 = _mm_set_ss(0.7f), a7 = _mm_set_ss(0.8f);
+//     __m128 b  = _mm_set_ss(1.0000001f);
+//     __m128 c  = _mm_set_ss(1.0000001f);
+
+//     const int iterations = 100000000;
+
+//     // 预热 CPU，触发睿频
+//     for (volatile int w = 0; w < 1000000; ++w);
+
+//     _mm_mfence();
+//     uint64_t start = __rdtsc();
+
+//     for (int i = 0; i < iterations; ++i) {
+//         a0 = _mm_fmadd_ss(b, c, a0);
+//         a1 = _mm_fmadd_ss(b, c, a1);
+//         a2 = _mm_fmadd_ss(b, c, a2);
+//         a3 = _mm_fmadd_ss(b, c, a3);
+//         a4 = _mm_fmadd_ss(b, c, a4);
+//         a5 = _mm_fmadd_ss(b, c, a5);
+//         a6 = _mm_fmadd_ss(b, c, a6);
+//         a7 = _mm_fmadd_ss(b, c, a7);
+//     }
+
+//     _mm_mfence();
+//     uint64_t end = __rdtsc();
+
+//     // 强行使用计算结果，防止死代码消除
+//     __m128 sum = _mm_add_ss(_mm_add_ss(_mm_add_ss(a0, a1), _mm_add_ss(a2, a3)),
+//                             _mm_add_ss(_mm_add_ss(a4, a5), _mm_add_ss(a6, a7)));
+//     float dummy = _mm_cvtss_f32(sum);
+
+//     uint64_t total_cycles = end - start;
+//     double cycles_per_loop = (double)total_cycles / iterations;
+
+//     std::cout << "Cycles per loop: " << cycles_per_loop 
+//               << " (dummy sink: " << dummy << ")" << std::endl;
+// }
+
+// int main() {
+//     test_fma_throughput();
+//     return 0;
+// }
